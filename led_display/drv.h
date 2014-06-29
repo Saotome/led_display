@@ -30,7 +30,7 @@ typedef struct
 #define BYTE		(8)
 
 #define Y_MAX		(Y_AREA_NUM * BYTE)
-#define X_MAX		(1)
+#define X_MAX		(48)
 
 /*****************************************************************************
  * Function prototype                                                        *

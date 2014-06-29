@@ -67,7 +67,7 @@ void Initialize()
 	
 	// output
 	Y_AXIS = 0xff;			// PORTD Initialize
-	DDRD = 0xff;			// 0～7を出力 Output
+	DDRD = 0xff;			// bit 0-7 set to Output
 	
 	PORTB = 0x00;
 	DDRB = 0x01;
@@ -96,7 +96,7 @@ void SetLed(VECTOR v, bool s)
 {
 	if(v.x < X_MAX && v.y < Y_MAX)
 	{
-		// 1:消灯, 0:点灯
+		// 1:Light ON, 0:Light OFF
 		if(s)
 		{
 			led_map[v.x][v.y / BYTE] &= ~_BV(v.y % BYTE);
@@ -118,11 +118,14 @@ void SetLedLevel(VECTOR v, uint8_t s)
 {
 	uint8_t i;
 	
-	for(i = 1; i <= BYTE; i++) {
-		if(i <= s) {
-			led_level[v.x][v.y / BYTE][i-1] &= ~_BV(v.y % BYTE);
-		} else {
-			led_level[v.x][v.y / BYTE][i-1] |= _BV(v.y % BYTE);
+	if(v.x < X_MAX && v.y < Y_MAX)
+	{
+		for(i = 1; i <= BYTE; i++) {
+			if(i <= s) {
+				led_level[v.x][v.y / BYTE][i-1] &= ~_BV(v.y % BYTE);
+			} else {
+				led_level[v.x][v.y / BYTE][i-1] |= _BV(v.y % BYTE);
+			}
 		}
 	}
 }
@@ -137,14 +140,20 @@ void SetLedLevel(VECTOR v, uint8_t s)
  *---------------------------------------------------------------------------*/
 static void LightLed()
 {
-	Y_AREA = area_y;
-	Y_AXIS = led_map[pos_x / Y_AREA_NUM][area_y]
-	       | led_level[pos_x / Y_AREA_NUM][area_y][duty / (X_MAX * Y_AREA_NUM)];
+	//現状のハードがx=1しかないので、とりあえずx=0 or 1にて点灯させる。
+	if(pos_x < Y_AREA_NUM) {
+		Y_AREA = area_y;
+		Y_AXIS = led_map[pos_x / (Y_AREA_NUM)][area_y]
+			   | led_level[pos_x / (Y_AREA_NUM)][area_y][duty / (X_MAX * Y_AREA_NUM)];
+	} else {
+		Y_AREA = area_y;
+		Y_AXIS = 0xff;
+	}
 	
-	pos_x++;
-	pos_x %= (X_MAX * Y_AREA_NUM);
 	area_y++;
 	area_y %= Y_AREA_NUM;
+	pos_x++;
+	pos_x  %= Y_AREA_NUM * X_MAX;
 	duty++;
-	duty %= X_MAX * Y_AREA_NUM * BYTE;
+	duty   %= Y_AREA_NUM * X_MAX * BYTE;
 }

@@ -26,8 +26,9 @@ void flash()
 	uint8_t i;
 	
 	SetAll(true);
+	SetAllLevel(1);
 	for(i = 0; i <= BYTE; i++){
-		SetAllLevel(i);
+		//SetAllLevel(i);
 		wait_ms(250);
 	}
 }
