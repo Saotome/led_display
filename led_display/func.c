@@ -50,13 +50,13 @@ void SetAll(bool s)
 * Argument	: -
 * Return	: -
 *---------------------------------------------------------------------------*/
-void SetAllLevel(uint8_t s)
+void SetAllLevel(uint8_t level)
 {
 	VECTOR v;
 	
 	for( v.x = 0; v.x < X_MAX; v.x++) {
 		for( v.y = 0; v.y < Y_MAX; v.y++){
-			SetLedLevel(v, s);
+			SetLedLevel(v, level);
 		}
 	}
 }

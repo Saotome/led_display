@@ -11,6 +11,7 @@
  *****************************************************************************/
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <avr/pgmspace.h>
 
 #include "drv.h"
 
@@ -21,13 +22,33 @@
 #define Y_AREA			PORTB
 
 /*****************************************************************************
+ * Type Definition                                                           *
+ *****************************************************************************/
+union LEVEL{
+	uint64_t level64;
+	uint8_t  level8[BYTE];
+};
+
+/*****************************************************************************
  * Variable                                                                  *
  *****************************************************************************/
 static uint8_t pos_x;
 static uint8_t area_y;
 static uint16_t duty;
 static uint8_t led_map[X_MAX][Y_AREA_NUM];
-static uint8_t led_level[X_MAX][Y_AREA_NUM][BYTE];
+static union LEVEL led_level[X_MAX][Y_AREA_NUM];
+
+const uint64_t LED_LEVEL_MASK[BYTE + 1] PROGMEM = {
+	0x0000000000000000,
+	0x0100000000000000,
+	0x0101000000000000,
+	0x0101010000000000,
+	0x0101010100000000,
+	0x0101010101000000,
+	0x0101010101010000,
+	0x0101010101010100,
+	0x0101010101010101
+};
 
 /*****************************************************************************
  * Function prototype                                                        *
@@ -48,21 +69,19 @@ void Initialize()
 		
 	for(i = 0; i < X_MAX; i++) {
 		for( j = 0; j < Y_AREA_NUM; j++) {
-			led_map[i][j] = 0;
-			for(k = 0; k < BYTE; k++) {
-				led_level[i][j][k] = 0;
-			}
+			led_map[i][j]   = 0;
+			led_level[i][j].level64 = 0;
 		}
 	}
-	
+
 	pos_x = 0;
 	area_y = 0;
-	duty = 0;
+	//duty = 0;
 	
 	// Register settings
 	// timer
 	TCNT0 = 0;				// Timer 0 Initialize
-	TCCR0B = 1;				// Clock Select ck/1
+	TCCR0B = 2;				// Clock Select clk/8
 	TIMSK0 = _BV(TOIE0);	// Over Flow Interrupt enable
 	
 	// output
@@ -116,17 +135,10 @@ void SetLed(VECTOR v, bool s)
  *---------------------------------------------------------------------------*/
 void SetLedLevel(VECTOR v, uint8_t s)
 {
-	uint8_t i;
-	
-	if(v.x < X_MAX && v.y < Y_MAX)
+	if(v.x < X_MAX && v.y < Y_MAX && s <= BYTE)
 	{
-		for(i = 1; i <= BYTE; i++) {
-			if(i <= s) {
-				led_level[v.x][v.y / BYTE][i-1] &= ~_BV(v.y % BYTE);
-			} else {
-				led_level[v.x][v.y / BYTE][i-1] |= _BV(v.y % BYTE);
-			}
-		}
+		led_level[v.x][v.y / BYTE].level64 |=  (LED_LEVEL_MASK[BYTE] << (v.y % BYTE) );
+		led_level[v.x][v.y / BYTE].level64 &= ~(LED_LEVEL_MASK[8]    << (v.y % BYTE) );
 	}
 }
 
@@ -141,19 +153,18 @@ void SetLedLevel(VECTOR v, uint8_t s)
 static void LightLed()
 {
 	//現状のハードがx=1しかないので、とりあえずx=0 or 1にて点灯させる。
-	if(pos_x < Y_AREA_NUM) {
+	if(pos_x == 0 || pos_x == 1) {
 		Y_AREA = area_y;
-		Y_AXIS = led_map[pos_x / (Y_AREA_NUM)][area_y]
-			   | led_level[pos_x / (Y_AREA_NUM)][area_y][duty / (X_MAX * Y_AREA_NUM)];
+		Y_AXIS = led_map[pos_x / (Y_AREA_NUM)][area_y];
+		//	   | led_level[pos_x / (Y_AREA_NUM)][area_y].level8[duty / (X_MAX * Y_AREA_NUM)];
 	} else {
 		Y_AREA = area_y;
 		Y_AXIS = 0xff;
 	}
 	
 	area_y++;
-	area_y %= Y_AREA_NUM;
 	pos_x++;
+	area_y %= Y_AREA_NUM;
 	pos_x  %= Y_AREA_NUM * X_MAX;
-	duty++;
-	duty   %= Y_AREA_NUM * X_MAX * BYTE;
+	//duty = count % (Y_AREA_NUM * X_MAX * BYTE);
 }
