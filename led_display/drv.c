@@ -12,6 +12,8 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
+#define F_CPU 8000000
+#include <util/delay.h>
 
 #include "drv.h"
 
@@ -20,6 +22,7 @@
  *****************************************************************************/
 #define Y_AXIS			PORTD
 #define Y_AREA			PORTB
+#define CHANGE_DELAY    (32)
 
 /*****************************************************************************
  * Type Definition                                                           *
@@ -36,7 +39,7 @@ static uint8_t pos_x;
 static uint8_t area_y;
 static uint16_t duty;
 static uint8_t led_map[X_MAX][Y_AREA_NUM];
-static union LEVEL led_level[X_MAX][Y_AREA_NUM];
+//static union LEVEL led_level[X_MAX][Y_AREA_NUM];
 
 const uint64_t LED_LEVEL_MASK[BYTE + 1] PROGMEM = {
 	0x0000000000000000,
@@ -70,7 +73,7 @@ void Initialize()
 	for(i = 0; i < X_MAX; i++) {
 		for( j = 0; j < Y_AREA_NUM; j++) {
 			led_map[i][j]   = 0;
-			led_level[i][j].level64 = 0;
+			//led_level[i][j].level64 = 0;
 		}
 	}
 
@@ -137,8 +140,8 @@ void SetLedLevel(VECTOR v, uint8_t s)
 {
 	if(v.x < X_MAX && v.y < Y_MAX && s <= BYTE)
 	{
-		led_level[v.x][v.y / BYTE].level64 |=  (LED_LEVEL_MASK[BYTE] << (v.y % BYTE) );
-		led_level[v.x][v.y / BYTE].level64 &= ~(LED_LEVEL_MASK[8]    << (v.y % BYTE) );
+		//led_level[v.x][v.y / BYTE].level64 |=  (LED_LEVEL_MASK[BYTE] << (v.y % BYTE) );
+		//led_level[v.x][v.y / BYTE].level64 &= ~(LED_LEVEL_MASK[8]    << (v.y % BYTE) );
 	}
 }
 
@@ -152,19 +155,23 @@ void SetLedLevel(VECTOR v, uint8_t s)
  *---------------------------------------------------------------------------*/
 static void LightLed()
 {
-	//現状のハードがx=1しかないので、とりあえずx=0 or 1にて点灯させる。
-	if(pos_x == 0 || pos_x == 1) {
-		Y_AREA = area_y;
-		Y_AXIS = led_map[pos_x / (Y_AREA_NUM)][area_y];
+	Y_AXIS = 0xff;
+	
+	//現状のハードがx=1しかないので、とりあえずx=0にて点灯させる。
+	if(pos_x == 0) {
+		Y_AREA = area_y / X_MAX;
+		_delay_us(CHANGE_DELAY);
+		Y_AXIS = led_map[pos_x][area_y / X_MAX];
 		//	   | led_level[pos_x / (Y_AREA_NUM)][area_y].level8[duty / (X_MAX * Y_AREA_NUM)];
 	} else {
-		Y_AREA = area_y;
+		Y_AREA = area_y/ X_MAX;
+		_delay_us(CHANGE_DELAY);
 		Y_AXIS = 0xff;
 	}
 	
 	area_y++;
 	pos_x++;
-	area_y %= Y_AREA_NUM;
-	pos_x  %= Y_AREA_NUM * X_MAX;
+	pos_x  %= X_MAX;
+	area_y %= X_MAX * Y_AREA_NUM;
 	//duty = count % (Y_AREA_NUM * X_MAX * BYTE);
 }
