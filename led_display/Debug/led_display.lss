@@ -3,33 +3,33 @@ led_display.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000000  00800100  00000260  000002f4  2**0
+  0 .data         00000000  00800100  00000272  00000306  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         00000260  00000000  00000000  00000094  2**1
+  1 .text         00000272  00000000  00000000  00000094  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          00000063  00800100  00800100  000002f4  2**0
+  2 .bss          00000062  00800100  00800100  00000306  2**0
                   ALLOC
-  3 .stab         000006cc  00000000  00000000  000002f4  2**2
+  3 .stab         000006cc  00000000  00000000  00000308  2**2
                   CONTENTS, READONLY, DEBUGGING
-  4 .stabstr      00000097  00000000  00000000  000009c0  2**0
+  4 .stabstr      00000097  00000000  00000000  000009d4  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .comment      0000002f  00000000  00000000  00000a57  2**0
+  5 .comment      0000002f  00000000  00000000  00000a6b  2**0
                   CONTENTS, READONLY
-  6 .debug_aranges 000000a8  00000000  00000000  00000a86  2**0
+  6 .debug_aranges 000000c8  00000000  00000000  00000a9a  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_info   00000708  00000000  00000000  00000b2e  2**0
+  7 .debug_info   000007ec  00000000  00000000  00000b62  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_abbrev 00000420  00000000  00000000  00001236  2**0
+  8 .debug_abbrev 000004a8  00000000  00000000  0000134e  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_line   00000513  00000000  00000000  00001656  2**0
+  9 .debug_line   0000061e  00000000  00000000  000017f6  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_frame  00000140  00000000  00000000  00001b6c  2**2
+ 10 .debug_frame  00000168  00000000  00000000  00001e14  2**2
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_str    000001d8  00000000  00000000  00001cac  2**0
+ 11 .debug_str    000001d5  00000000  00000000  00001f7c  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_loc    00000411  00000000  00000000  00001e84  2**0
+ 12 .debug_loc    0000041e  00000000  00000000  00002151  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_ranges 00000068  00000000  00000000  00002295  2**0
+ 13 .debug_ranges 00000078  00000000  00000000  0000256f  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -51,7 +51,7 @@ Disassembly of section .text:
   1a:	1c c0       	rjmp	.+56     	; 0x54 <__bad_interrupt>
   1c:	1b c0       	rjmp	.+54     	; 0x54 <__bad_interrupt>
   1e:	1a c0       	rjmp	.+52     	; 0x54 <__bad_interrupt>
-  20:	4b c0       	rjmp	.+150    	; 0xb8 <__vector_16>
+  20:	55 c0       	rjmp	.+170    	; 0xcc <__vector_16>
   22:	18 c0       	rjmp	.+48     	; 0x54 <__bad_interrupt>
   24:	17 c0       	rjmp	.+46     	; 0x54 <__bad_interrupt>
   26:	16 c0       	rjmp	.+44     	; 0x54 <__bad_interrupt>
@@ -80,461 +80,496 @@ Disassembly of section .text:
   48:	1d 92       	st	X+, r1
 
 0000004a <.do_clear_bss_start>:
-  4a:	a3 36       	cpi	r26, 0x63	; 99
+  4a:	a2 36       	cpi	r26, 0x62	; 98
   4c:	b2 07       	cpc	r27, r18
   4e:	e1 f7       	brne	.-8      	; 0x48 <.do_clear_bss_loop>
-  50:	02 d1       	rcall	.+516    	; 0x256 <main>
-  52:	04 c1       	rjmp	.+520    	; 0x25c <_exit>
+  50:	0a d1       	rcall	.+532    	; 0x266 <main>
+  52:	0d c1       	rjmp	.+538    	; 0x26e <_exit>
 
 00000054 <__bad_interrupt>:
   54:	d5 cf       	rjmp	.-86     	; 0x0 <__vectors>
 
 00000056 <flash>:
- * とりあえず点滅するだけのテスト
  * Argument	: -
  * Return	: -
  *---------------------------------------------------------------------------*/
 void flash()
 {	
-  56:	cf 93       	push	r28
+	SetAll(true);
+  56:	81 e0       	ldi	r24, 0x01	; 1
+  58:	ed d0       	rcall	.+474    	; 0x234 <SetAll>
+	wait_ms(200);
+  5a:	88 ec       	ldi	r24, 0xC8	; 200
+  5c:	90 e0       	ldi	r25, 0x00	; 0
+  5e:	df d0       	rcall	.+446    	; 0x21e <wait_ms>
+	SetAll(false);
+  60:	80 e0       	ldi	r24, 0x00	; 0
+  62:	e8 d0       	rcall	.+464    	; 0x234 <SetAll>
+	wait_ms(200);
+  64:	88 ec       	ldi	r24, 0xC8	; 200
+  66:	90 e0       	ldi	r25, 0x00	; 0
+  68:	da d0       	rcall	.+436    	; 0x21e <wait_ms>
+  6a:	08 95       	ret
+
+0000006c <relay>:
+ * 順番に点灯
+ * Argument	: -
+ * Return	: -
+ *---------------------------------------------------------------------------*/
+void relay()
+{	
+  6c:	cf 93       	push	r28
+  6e:	df 93       	push	r29
 	VECTOR v;
+	uint8_t i;
 	
 	v.x = 0;
-	v.y = pos;
-  58:	c0 91 00 01 	lds	r28, 0x0100
+  70:	d0 e0       	ldi	r29, 0x00	; 0
 	
-	SetAll(false);
-  5c:	80 e0       	ldi	r24, 0x00	; 0
-  5e:	e2 d0       	rcall	.+452    	; 0x224 <SetAll>
-	SetLed(v ,true);
-  60:	61 e0       	ldi	r22, 0x01	; 1
-  62:	80 e0       	ldi	r24, 0x00	; 0
-  64:	9c 2f       	mov	r25, r28
-  66:	98 d0       	rcall	.+304    	; 0x198 <SetLed>
-	wait_ms(100);
-  68:	84 e6       	ldi	r24, 0x64	; 100
-  6a:	90 e0       	ldi	r25, 0x00	; 0
-  6c:	d0 d0       	rcall	.+416    	; 0x20e <wait_ms>
-	pos++;
-  6e:	80 91 00 01 	lds	r24, 0x0100
-  72:	8f 5f       	subi	r24, 0xFF	; 255
-	pos %= Y_MAX;
-  74:	8f 70       	andi	r24, 0x0F	; 15
-  76:	80 93 00 01 	sts	0x0100, r24
+	for(i = 0; i < Y_MAX; i++) {
+  72:	c0 e0       	ldi	r28, 0x00	; 0
+		v.y = i;
+		SetAll(false);
+  74:	80 e0       	ldi	r24, 0x00	; 0
+  76:	de d0       	rcall	.+444    	; 0x234 <SetAll>
+		SetLed(v ,true);
+  78:	61 e0       	ldi	r22, 0x01	; 1
+  7a:	8d 2f       	mov	r24, r29
+  7c:	9c 2f       	mov	r25, r28
+  7e:	94 d0       	rcall	.+296    	; 0x1a8 <SetLed>
+		wait_ms(50);
+  80:	82 e3       	ldi	r24, 0x32	; 50
+  82:	90 e0       	ldi	r25, 0x00	; 0
+  84:	cc d0       	rcall	.+408    	; 0x21e <wait_ms>
+	VECTOR v;
+	uint8_t i;
+	
+	v.x = 0;
+	
+	for(i = 0; i < Y_MAX; i++) {
+  86:	cf 5f       	subi	r28, 0xFF	; 255
+  88:	c0 31       	cpi	r28, 0x10	; 16
+  8a:	a1 f7       	brne	.-24     	; 0x74 <relay+0x8>
+		v.y = i;
+		SetAll(false);
+		SetLed(v ,true);
+		wait_ms(50);
+	}
 }
-  7a:	cf 91       	pop	r28
-  7c:	08 95       	ret
+  8c:	df 91       	pop	r29
+  8e:	cf 91       	pop	r28
+  90:	08 95       	ret
 
-0000007e <Initialize>:
+00000092 <Initialize>:
  * Initialize
  * Argument	: -
  * Return	: -
  *---------------------------------------------------------------------------*/
 void Initialize()
 {
-  7e:	e2 e0       	ldi	r30, 0x02	; 2
-  80:	f1 e0       	ldi	r31, 0x01	; 1
+  92:	e1 e0       	ldi	r30, 0x01	; 1
+  94:	f1 e0       	ldi	r31, 0x01	; 1
 /*----------------------------------------------------------------------------
  * Initialize
  * Argument	: -
  * Return	: -
  *---------------------------------------------------------------------------*/
 void Initialize()
-  82:	82 e6       	ldi	r24, 0x62	; 98
-  84:	91 e0       	ldi	r25, 0x01	; 1
-  86:	df 01       	movw	r26, r30
-  88:	11 97       	sbiw	r26, 0x01	; 1
+  96:	81 e6       	ldi	r24, 0x61	; 97
+  98:	91 e0       	ldi	r25, 0x01	; 1
+  9a:	df 01       	movw	r26, r30
+  9c:	11 97       	sbiw	r26, 0x01	; 1
 {
 	uint8_t i, j, k;
 		
 	for(i = 0; i < X_MAX; i++) {
 		for( j = 0; j < Y_AREA_NUM; j++) {
 			led_map[i][j]   = 0;
-  8a:	1c 92       	st	X, r1
-  8c:	10 82       	st	Z, r1
-  8e:	32 96       	adiw	r30, 0x02	; 2
+  9e:	1c 92       	st	X, r1
+  a0:	10 82       	st	Z, r1
+  a2:	32 96       	adiw	r30, 0x02	; 2
  *---------------------------------------------------------------------------*/
 void Initialize()
 {
 	uint8_t i, j, k;
 		
 	for(i = 0; i < X_MAX; i++) {
-  90:	e8 17       	cp	r30, r24
-  92:	f9 07       	cpc	r31, r25
-  94:	c1 f7       	brne	.-16     	; 0x86 <Initialize+0x8>
+  a4:	e8 17       	cp	r30, r24
+  a6:	f9 07       	cpc	r31, r25
+  a8:	c1 f7       	brne	.-16     	; 0x9a <Initialize+0x8>
 			led_map[i][j]   = 0;
 			//led_level[i][j].level64 = 0;
 		}
 	}
 
 	pos_x = 0;
-  96:	10 92 61 01 	sts	0x0161, r1
+  aa:	10 92 60 01 	sts	0x0160, r1
 	area_y = 0;
-  9a:	10 92 62 01 	sts	0x0162, r1
+  ae:	10 92 61 01 	sts	0x0161, r1
 	//duty = 0;
 	
 	// Register settings
 	// timer
 	TCNT0 = 0;				// Timer 0 Initialize
-  9e:	16 bc       	out	0x26, r1	; 38
+  b2:	16 bc       	out	0x26, r1	; 38
 	TCCR0B = 2;				// Clock Select clk/8
-  a0:	82 e0       	ldi	r24, 0x02	; 2
-  a2:	85 bd       	out	0x25, r24	; 37
+  b4:	82 e0       	ldi	r24, 0x02	; 2
+  b6:	85 bd       	out	0x25, r24	; 37
 	TIMSK0 = _BV(TOIE0);	// Over Flow Interrupt enable
-  a4:	81 e0       	ldi	r24, 0x01	; 1
-  a6:	80 93 6e 00 	sts	0x006E, r24
+  b8:	81 e0       	ldi	r24, 0x01	; 1
+  ba:	80 93 6e 00 	sts	0x006E, r24
 	
 	// output
 	Y_AXIS = 0xff;			// PORTD Initialize
-  aa:	9f ef       	ldi	r25, 0xFF	; 255
-  ac:	9b b9       	out	0x0b, r25	; 11
+  be:	9f ef       	ldi	r25, 0xFF	; 255
+  c0:	9b b9       	out	0x0b, r25	; 11
 	DDRD = 0xff;			// bit 0-7 set to Output
-  ae:	9a b9       	out	0x0a, r25	; 10
+  c2:	9a b9       	out	0x0a, r25	; 10
 	
 	PORTB = 0x00;
-  b0:	15 b8       	out	0x05, r1	; 5
+  c4:	15 b8       	out	0x05, r1	; 5
 	DDRB = 0x01;
-  b2:	84 b9       	out	0x04, r24	; 4
+  c6:	84 b9       	out	0x04, r24	; 4
 	
 	sei();
-  b4:	78 94       	sei
-  b6:	08 95       	ret
+  c8:	78 94       	sei
+  ca:	08 95       	ret
 
-000000b8 <__vector_16>:
+000000cc <__vector_16>:
  * Argument	: VECTOR v
  *          : bool	 s
  * Return	: -
  *---------------------------------------------------------------------------*/
 ISR(TIMER0_OVF_vect)
 {
-  b8:	1f 92       	push	r1
-  ba:	0f 92       	push	r0
-  bc:	0f b6       	in	r0, 0x3f	; 63
-  be:	0f 92       	push	r0
-  c0:	11 24       	eor	r1, r1
-  c2:	2f 93       	push	r18
-  c4:	3f 93       	push	r19
-  c6:	4f 93       	push	r20
-  c8:	8f 93       	push	r24
-  ca:	9f 93       	push	r25
-  cc:	ef 93       	push	r30
-  ce:	ff 93       	push	r31
+  cc:	1f 92       	push	r1
+  ce:	0f 92       	push	r0
+  d0:	0f b6       	in	r0, 0x3f	; 63
+  d2:	0f 92       	push	r0
+  d4:	11 24       	eor	r1, r1
+  d6:	2f 93       	push	r18
+  d8:	3f 93       	push	r19
+  da:	4f 93       	push	r20
+  dc:	8f 93       	push	r24
+  de:	9f 93       	push	r25
+  e0:	ef 93       	push	r30
+  e2:	ff 93       	push	r31
  * Argument	: -
  * Return	: -
  *---------------------------------------------------------------------------*/
 static void LightLed()
 {
 	Y_AXIS = 0xff;
-  d0:	8f ef       	ldi	r24, 0xFF	; 255
-  d2:	8b b9       	out	0x0b, r24	; 11
+  e4:	8f ef       	ldi	r24, 0xFF	; 255
+  e6:	8b b9       	out	0x0b, r24	; 11
 	
 	//現状のハードがx=1しかないので、とりあえずx=0にて点灯させる。
 	if(pos_x == 0) {
-  d4:	80 91 61 01 	lds	r24, 0x0161
-  d8:	81 11       	cpse	r24, r1
-  da:	22 c0       	rjmp	.+68     	; 0x120 <__vector_16+0x68>
+  e8:	80 91 60 01 	lds	r24, 0x0160
+  ec:	81 11       	cpse	r24, r1
+  ee:	21 c0       	rjmp	.+66     	; 0x132 <__vector_16+0x66>
 		Y_AREA = area_y / X_MAX;
-  dc:	90 91 62 01 	lds	r25, 0x0162
-  e0:	8b ea       	ldi	r24, 0xAB	; 171
-  e2:	98 9f       	mul	r25, r24
-  e4:	91 2d       	mov	r25, r1
-  e6:	11 24       	eor	r1, r1
-  e8:	92 95       	swap	r25
-  ea:	96 95       	lsr	r25
-  ec:	97 70       	andi	r25, 0x07	; 7
-  ee:	95 b9       	out	0x05, r25	; 5
+  f0:	90 91 61 01 	lds	r25, 0x0161
+  f4:	8b ea       	ldi	r24, 0xAB	; 171
+  f6:	98 9f       	mul	r25, r24
+  f8:	91 2d       	mov	r25, r1
+  fa:	11 24       	eor	r1, r1
+  fc:	92 95       	swap	r25
+  fe:	96 95       	lsr	r25
+ 100:	97 70       	andi	r25, 0x07	; 7
+ 102:	95 b9       	out	0x05, r25	; 5
 	#else
 		//round up by default
 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
 	#endif
 
 	__builtin_avr_delay_cycles(__ticks_dc);
-  f0:	25 e5       	ldi	r18, 0x55	; 85
-  f2:	2a 95       	dec	r18
-  f4:	f1 f7       	brne	.-4      	; 0xf2 <__vector_16+0x3a>
-  f6:	00 00       	nop
+ 104:	20 e6       	ldi	r18, 0x60	; 96
+ 106:	2a 95       	dec	r18
+ 108:	f1 f7       	brne	.-4      	; 0x106 <__vector_16+0x3a>
 		_delay_us(CHANGE_DELAY);
 		Y_AXIS = led_map[pos_x][area_y / X_MAX];
-  f8:	e0 91 61 01 	lds	r30, 0x0161
-  fc:	f0 e0       	ldi	r31, 0x00	; 0
-  fe:	90 91 62 01 	lds	r25, 0x0162
- 102:	98 9f       	mul	r25, r24
- 104:	81 2d       	mov	r24, r1
- 106:	11 24       	eor	r1, r1
- 108:	82 95       	swap	r24
- 10a:	86 95       	lsr	r24
- 10c:	87 70       	andi	r24, 0x07	; 7
- 10e:	ee 0f       	add	r30, r30
- 110:	ff 1f       	adc	r31, r31
- 112:	e8 0f       	add	r30, r24
- 114:	f1 1d       	adc	r31, r1
- 116:	ef 5f       	subi	r30, 0xFF	; 255
- 118:	fe 4f       	sbci	r31, 0xFE	; 254
- 11a:	80 81       	ld	r24, Z
- 11c:	8b b9       	out	0x0b, r24	; 11
- 11e:	10 c0       	rjmp	.+32     	; 0x140 <__vector_16+0x88>
+ 10a:	e0 91 60 01 	lds	r30, 0x0160
+ 10e:	f0 e0       	ldi	r31, 0x00	; 0
+ 110:	90 91 61 01 	lds	r25, 0x0161
+ 114:	98 9f       	mul	r25, r24
+ 116:	81 2d       	mov	r24, r1
+ 118:	11 24       	eor	r1, r1
+ 11a:	82 95       	swap	r24
+ 11c:	86 95       	lsr	r24
+ 11e:	87 70       	andi	r24, 0x07	; 7
+ 120:	ee 0f       	add	r30, r30
+ 122:	ff 1f       	adc	r31, r31
+ 124:	e8 0f       	add	r30, r24
+ 126:	f1 1d       	adc	r31, r1
+ 128:	e0 50       	subi	r30, 0x00	; 0
+ 12a:	ff 4f       	sbci	r31, 0xFF	; 255
+ 12c:	80 81       	ld	r24, Z
+ 12e:	8b b9       	out	0x0b, r24	; 11
+ 130:	0f c0       	rjmp	.+30     	; 0x150 <__vector_16+0x84>
 		//	   | led_level[pos_x / (Y_AREA_NUM)][area_y].level8[duty / (X_MAX * Y_AREA_NUM)];
 	} else {
 		Y_AREA = area_y/ X_MAX;
- 120:	90 91 62 01 	lds	r25, 0x0162
- 124:	8b ea       	ldi	r24, 0xAB	; 171
- 126:	98 9f       	mul	r25, r24
- 128:	81 2d       	mov	r24, r1
- 12a:	11 24       	eor	r1, r1
- 12c:	82 95       	swap	r24
- 12e:	86 95       	lsr	r24
- 130:	87 70       	andi	r24, 0x07	; 7
- 132:	85 b9       	out	0x05, r24	; 5
- 134:	45 e5       	ldi	r20, 0x55	; 85
- 136:	4a 95       	dec	r20
- 138:	f1 f7       	brne	.-4      	; 0x136 <__vector_16+0x7e>
- 13a:	00 00       	nop
+ 132:	90 91 61 01 	lds	r25, 0x0161
+ 136:	8b ea       	ldi	r24, 0xAB	; 171
+ 138:	98 9f       	mul	r25, r24
+ 13a:	81 2d       	mov	r24, r1
+ 13c:	11 24       	eor	r1, r1
+ 13e:	82 95       	swap	r24
+ 140:	86 95       	lsr	r24
+ 142:	87 70       	andi	r24, 0x07	; 7
+ 144:	85 b9       	out	0x05, r24	; 5
+ 146:	40 e6       	ldi	r20, 0x60	; 96
+ 148:	4a 95       	dec	r20
+ 14a:	f1 f7       	brne	.-4      	; 0x148 <__vector_16+0x7c>
 		_delay_us(CHANGE_DELAY);
 		Y_AXIS = 0xff;
- 13c:	8f ef       	ldi	r24, 0xFF	; 255
- 13e:	8b b9       	out	0x0b, r24	; 11
+ 14c:	8f ef       	ldi	r24, 0xFF	; 255
+ 14e:	8b b9       	out	0x0b, r24	; 11
 	}
 	
 	area_y++;
- 140:	80 91 62 01 	lds	r24, 0x0162
- 144:	8f 5f       	subi	r24, 0xFF	; 255
+ 150:	80 91 61 01 	lds	r24, 0x0161
+ 154:	8f 5f       	subi	r24, 0xFF	; 255
 	pos_x++;
- 146:	20 91 61 01 	lds	r18, 0x0161
- 14a:	2f 5f       	subi	r18, 0xFF	; 255
+ 156:	20 91 60 01 	lds	r18, 0x0160
+ 15a:	2f 5f       	subi	r18, 0xFF	; 255
 	pos_x  %= X_MAX;
- 14c:	9b ea       	ldi	r25, 0xAB	; 171
- 14e:	29 9f       	mul	r18, r25
- 150:	31 2d       	mov	r19, r1
- 152:	11 24       	eor	r1, r1
- 154:	32 95       	swap	r19
- 156:	36 95       	lsr	r19
- 158:	37 70       	andi	r19, 0x07	; 7
- 15a:	40 e3       	ldi	r20, 0x30	; 48
- 15c:	34 9f       	mul	r19, r20
- 15e:	20 19       	sub	r18, r0
- 160:	11 24       	eor	r1, r1
- 162:	20 93 61 01 	sts	0x0161, r18
+ 15c:	9b ea       	ldi	r25, 0xAB	; 171
+ 15e:	29 9f       	mul	r18, r25
+ 160:	31 2d       	mov	r19, r1
+ 162:	11 24       	eor	r1, r1
+ 164:	32 95       	swap	r19
+ 166:	36 95       	lsr	r19
+ 168:	37 70       	andi	r19, 0x07	; 7
+ 16a:	40 e3       	ldi	r20, 0x30	; 48
+ 16c:	34 9f       	mul	r19, r20
+ 16e:	20 19       	sub	r18, r0
+ 170:	11 24       	eor	r1, r1
+ 172:	20 93 60 01 	sts	0x0160, r18
 	area_y %= X_MAX * Y_AREA_NUM;
- 166:	89 9f       	mul	r24, r25
- 168:	91 2d       	mov	r25, r1
- 16a:	11 24       	eor	r1, r1
- 16c:	92 95       	swap	r25
- 16e:	96 95       	lsr	r25
- 170:	96 95       	lsr	r25
- 172:	93 70       	andi	r25, 0x03	; 3
- 174:	20 e6       	ldi	r18, 0x60	; 96
- 176:	92 9f       	mul	r25, r18
- 178:	80 19       	sub	r24, r0
+ 176:	89 9f       	mul	r24, r25
+ 178:	91 2d       	mov	r25, r1
  17a:	11 24       	eor	r1, r1
- 17c:	80 93 62 01 	sts	0x0162, r24
+ 17c:	92 95       	swap	r25
+ 17e:	96 95       	lsr	r25
+ 180:	96 95       	lsr	r25
+ 182:	93 70       	andi	r25, 0x03	; 3
+ 184:	20 e6       	ldi	r18, 0x60	; 96
+ 186:	92 9f       	mul	r25, r18
+ 188:	80 19       	sub	r24, r0
+ 18a:	11 24       	eor	r1, r1
+ 18c:	80 93 61 01 	sts	0x0161, r24
  * Return	: -
  *---------------------------------------------------------------------------*/
 ISR(TIMER0_OVF_vect)
 {
 	LightLed();
 }
- 180:	ff 91       	pop	r31
- 182:	ef 91       	pop	r30
- 184:	9f 91       	pop	r25
- 186:	8f 91       	pop	r24
- 188:	4f 91       	pop	r20
- 18a:	3f 91       	pop	r19
- 18c:	2f 91       	pop	r18
- 18e:	0f 90       	pop	r0
- 190:	0f be       	out	0x3f, r0	; 63
- 192:	0f 90       	pop	r0
- 194:	1f 90       	pop	r1
- 196:	18 95       	reti
+ 190:	ff 91       	pop	r31
+ 192:	ef 91       	pop	r30
+ 194:	9f 91       	pop	r25
+ 196:	8f 91       	pop	r24
+ 198:	4f 91       	pop	r20
+ 19a:	3f 91       	pop	r19
+ 19c:	2f 91       	pop	r18
+ 19e:	0f 90       	pop	r0
+ 1a0:	0f be       	out	0x3f, r0	; 63
+ 1a2:	0f 90       	pop	r0
+ 1a4:	1f 90       	pop	r1
+ 1a6:	18 95       	reti
 
-00000198 <SetLed>:
+000001a8 <SetLed>:
  *          : bool	 s
  * Return	: -
  *---------------------------------------------------------------------------*/
 void SetLed(VECTOR v, bool s)
 {
 	if(v.x < X_MAX && v.y < Y_MAX)
- 198:	80 33       	cpi	r24, 0x30	; 48
- 19a:	c0 f5       	brcc	.+112    	; 0x20c <SetLed+0x74>
- 19c:	90 31       	cpi	r25, 0x10	; 16
- 19e:	b0 f5       	brcc	.+108    	; 0x20c <SetLed+0x74>
+ 1a8:	80 33       	cpi	r24, 0x30	; 48
+ 1aa:	c0 f5       	brcc	.+112    	; 0x21c <SetLed+0x74>
+ 1ac:	90 31       	cpi	r25, 0x10	; 16
+ 1ae:	b0 f5       	brcc	.+108    	; 0x21c <SetLed+0x74>
 	{
 		// 1:Light ON, 0:Light OFF
 		if(s)
- 1a0:	66 23       	and	r22, r22
- 1a2:	d9 f0       	breq	.+54     	; 0x1da <SetLed+0x42>
+ 1b0:	66 23       	and	r22, r22
+ 1b2:	d9 f0       	breq	.+54     	; 0x1ea <SetLed+0x42>
 		{
 			led_map[v.x][v.y / BYTE] &= ~_BV(v.y % BYTE);
- 1a4:	e8 2f       	mov	r30, r24
- 1a6:	f0 e0       	ldi	r31, 0x00	; 0
- 1a8:	89 2f       	mov	r24, r25
- 1aa:	86 95       	lsr	r24
- 1ac:	86 95       	lsr	r24
- 1ae:	86 95       	lsr	r24
- 1b0:	ee 0f       	add	r30, r30
- 1b2:	ff 1f       	adc	r31, r31
- 1b4:	e8 0f       	add	r30, r24
- 1b6:	f1 1d       	adc	r31, r1
- 1b8:	ef 5f       	subi	r30, 0xFF	; 255
- 1ba:	fe 4f       	sbci	r31, 0xFE	; 254
- 1bc:	97 70       	andi	r25, 0x07	; 7
- 1be:	21 e0       	ldi	r18, 0x01	; 1
- 1c0:	30 e0       	ldi	r19, 0x00	; 0
- 1c2:	a9 01       	movw	r20, r18
- 1c4:	02 c0       	rjmp	.+4      	; 0x1ca <SetLed+0x32>
- 1c6:	44 0f       	add	r20, r20
- 1c8:	55 1f       	adc	r21, r21
- 1ca:	9a 95       	dec	r25
- 1cc:	e2 f7       	brpl	.-8      	; 0x1c6 <SetLed+0x2e>
- 1ce:	ca 01       	movw	r24, r20
- 1d0:	80 95       	com	r24
- 1d2:	90 81       	ld	r25, Z
- 1d4:	89 23       	and	r24, r25
- 1d6:	80 83       	st	Z, r24
- 1d8:	08 95       	ret
+ 1b4:	e8 2f       	mov	r30, r24
+ 1b6:	f0 e0       	ldi	r31, 0x00	; 0
+ 1b8:	89 2f       	mov	r24, r25
+ 1ba:	86 95       	lsr	r24
+ 1bc:	86 95       	lsr	r24
+ 1be:	86 95       	lsr	r24
+ 1c0:	ee 0f       	add	r30, r30
+ 1c2:	ff 1f       	adc	r31, r31
+ 1c4:	e8 0f       	add	r30, r24
+ 1c6:	f1 1d       	adc	r31, r1
+ 1c8:	e0 50       	subi	r30, 0x00	; 0
+ 1ca:	ff 4f       	sbci	r31, 0xFF	; 255
+ 1cc:	97 70       	andi	r25, 0x07	; 7
+ 1ce:	21 e0       	ldi	r18, 0x01	; 1
+ 1d0:	30 e0       	ldi	r19, 0x00	; 0
+ 1d2:	a9 01       	movw	r20, r18
+ 1d4:	02 c0       	rjmp	.+4      	; 0x1da <SetLed+0x32>
+ 1d6:	44 0f       	add	r20, r20
+ 1d8:	55 1f       	adc	r21, r21
+ 1da:	9a 95       	dec	r25
+ 1dc:	e2 f7       	brpl	.-8      	; 0x1d6 <SetLed+0x2e>
+ 1de:	ca 01       	movw	r24, r20
+ 1e0:	80 95       	com	r24
+ 1e2:	90 81       	ld	r25, Z
+ 1e4:	89 23       	and	r24, r25
+ 1e6:	80 83       	st	Z, r24
+ 1e8:	08 95       	ret
 		}
 		else
 		{
 			led_map[v.x][v.y / BYTE] |= _BV(v.y % BYTE);
- 1da:	e8 2f       	mov	r30, r24
- 1dc:	f0 e0       	ldi	r31, 0x00	; 0
- 1de:	89 2f       	mov	r24, r25
- 1e0:	86 95       	lsr	r24
- 1e2:	86 95       	lsr	r24
- 1e4:	86 95       	lsr	r24
- 1e6:	ee 0f       	add	r30, r30
- 1e8:	ff 1f       	adc	r31, r31
- 1ea:	e8 0f       	add	r30, r24
- 1ec:	f1 1d       	adc	r31, r1
- 1ee:	ef 5f       	subi	r30, 0xFF	; 255
- 1f0:	fe 4f       	sbci	r31, 0xFE	; 254
- 1f2:	97 70       	andi	r25, 0x07	; 7
- 1f4:	21 e0       	ldi	r18, 0x01	; 1
- 1f6:	30 e0       	ldi	r19, 0x00	; 0
- 1f8:	a9 01       	movw	r20, r18
- 1fa:	02 c0       	rjmp	.+4      	; 0x200 <SetLed+0x68>
- 1fc:	44 0f       	add	r20, r20
- 1fe:	55 1f       	adc	r21, r21
- 200:	9a 95       	dec	r25
- 202:	e2 f7       	brpl	.-8      	; 0x1fc <SetLed+0x64>
- 204:	ca 01       	movw	r24, r20
- 206:	90 81       	ld	r25, Z
- 208:	89 2b       	or	r24, r25
- 20a:	80 83       	st	Z, r24
- 20c:	08 95       	ret
+ 1ea:	e8 2f       	mov	r30, r24
+ 1ec:	f0 e0       	ldi	r31, 0x00	; 0
+ 1ee:	89 2f       	mov	r24, r25
+ 1f0:	86 95       	lsr	r24
+ 1f2:	86 95       	lsr	r24
+ 1f4:	86 95       	lsr	r24
+ 1f6:	ee 0f       	add	r30, r30
+ 1f8:	ff 1f       	adc	r31, r31
+ 1fa:	e8 0f       	add	r30, r24
+ 1fc:	f1 1d       	adc	r31, r1
+ 1fe:	e0 50       	subi	r30, 0x00	; 0
+ 200:	ff 4f       	sbci	r31, 0xFF	; 255
+ 202:	97 70       	andi	r25, 0x07	; 7
+ 204:	21 e0       	ldi	r18, 0x01	; 1
+ 206:	30 e0       	ldi	r19, 0x00	; 0
+ 208:	a9 01       	movw	r20, r18
+ 20a:	02 c0       	rjmp	.+4      	; 0x210 <SetLed+0x68>
+ 20c:	44 0f       	add	r20, r20
+ 20e:	55 1f       	adc	r21, r21
+ 210:	9a 95       	dec	r25
+ 212:	e2 f7       	brpl	.-8      	; 0x20c <SetLed+0x64>
+ 214:	ca 01       	movw	r24, r20
+ 216:	90 81       	ld	r25, Z
+ 218:	89 2b       	or	r24, r25
+ 21a:	80 83       	st	Z, r24
+ 21c:	08 95       	ret
 
-0000020e <wait_ms>:
+0000021e <wait_ms>:
  * Argument	: uint16_t t
  * Return	: -
  *---------------------------------------------------------------------------*/
 void wait_ms(uint16_t t)
 {
 	while(t--) _delay_ms(1);
- 20e:	00 97       	sbiw	r24, 0x00	; 0
- 210:	41 f0       	breq	.+16     	; 0x222 <wait_ms+0x14>
+ 21e:	00 97       	sbiw	r24, 0x00	; 0
+ 220:	41 f0       	breq	.+16     	; 0x232 <wait_ms+0x14>
 	#else
 		//round up by default
 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
 	#endif
 
 	__builtin_avr_delay_cycles(__ticks_dc);
- 212:	ef ec       	ldi	r30, 0xCF	; 207
- 214:	f7 e0       	ldi	r31, 0x07	; 7
- 216:	31 97       	sbiw	r30, 0x01	; 1
- 218:	f1 f7       	brne	.-4      	; 0x216 <wait_ms+0x8>
- 21a:	00 c0       	rjmp	.+0      	; 0x21c <wait_ms+0xe>
- 21c:	00 00       	nop
- 21e:	01 97       	sbiw	r24, 0x01	; 1
- 220:	c1 f7       	brne	.-16     	; 0x212 <wait_ms+0x4>
- 222:	08 95       	ret
+ 222:	ef ec       	ldi	r30, 0xCF	; 207
+ 224:	f7 e0       	ldi	r31, 0x07	; 7
+ 226:	31 97       	sbiw	r30, 0x01	; 1
+ 228:	f1 f7       	brne	.-4      	; 0x226 <wait_ms+0x8>
+ 22a:	00 c0       	rjmp	.+0      	; 0x22c <wait_ms+0xe>
+ 22c:	00 00       	nop
+ 22e:	01 97       	sbiw	r24, 0x01	; 1
+ 230:	c1 f7       	brne	.-16     	; 0x222 <wait_ms+0x4>
+ 232:	08 95       	ret
 
-00000224 <SetAll>:
+00000234 <SetAll>:
 *
 * Argument	: -
 * Return	: -
 *---------------------------------------------------------------------------*/
 void SetAll(bool s)
 {
- 224:	0f 93       	push	r16
- 226:	1f 93       	push	r17
- 228:	cf 93       	push	r28
- 22a:	df 93       	push	r29
- 22c:	18 2f       	mov	r17, r24
+ 234:	0f 93       	push	r16
+ 236:	1f 93       	push	r17
+ 238:	cf 93       	push	r28
+ 23a:	df 93       	push	r29
+ 23c:	18 2f       	mov	r17, r24
 	VECTOR v;
 	
 	for( v.x = 0; v.x < X_MAX; v.x++) {
- 22e:	d0 e0       	ldi	r29, 0x00	; 0
+ 23e:	d0 e0       	ldi	r29, 0x00	; 0
 *
 * Argument	: -
 * Return	: -
 *---------------------------------------------------------------------------*/
 void SetAll(bool s)
 {
- 230:	00 e0       	ldi	r16, 0x00	; 0
- 232:	0a c0       	rjmp	.+20     	; 0x248 <SetAll+0x24>
+ 240:	00 e0       	ldi	r16, 0x00	; 0
+ 242:	0a c0       	rjmp	.+20     	; 0x258 <SetAll+0x24>
 	VECTOR v;
 	
 	for( v.x = 0; v.x < X_MAX; v.x++) {
 		for( v.y = 0; v.y < Y_MAX; v.y++){
 			SetLed(v, s);
- 234:	61 2f       	mov	r22, r17
- 236:	8d 2f       	mov	r24, r29
- 238:	9c 2f       	mov	r25, r28
- 23a:	ae df       	rcall	.-164    	; 0x198 <SetLed>
- 23c:	cf 5f       	subi	r28, 0xFF	; 255
+ 244:	61 2f       	mov	r22, r17
+ 246:	8d 2f       	mov	r24, r29
+ 248:	9c 2f       	mov	r25, r28
+ 24a:	ae df       	rcall	.-164    	; 0x1a8 <SetLed>
+ 24c:	cf 5f       	subi	r28, 0xFF	; 255
 void SetAll(bool s)
 {
 	VECTOR v;
 	
 	for( v.x = 0; v.x < X_MAX; v.x++) {
 		for( v.y = 0; v.y < Y_MAX; v.y++){
- 23e:	c0 31       	cpi	r28, 0x10	; 16
- 240:	c9 f7       	brne	.-14     	; 0x234 <SetAll+0x10>
+ 24e:	c0 31       	cpi	r28, 0x10	; 16
+ 250:	c9 f7       	brne	.-14     	; 0x244 <SetAll+0x10>
 *---------------------------------------------------------------------------*/
 void SetAll(bool s)
 {
 	VECTOR v;
 	
 	for( v.x = 0; v.x < X_MAX; v.x++) {
- 242:	df 5f       	subi	r29, 0xFF	; 255
- 244:	d0 33       	cpi	r29, 0x30	; 48
- 246:	11 f0       	breq	.+4      	; 0x24c <SetAll+0x28>
+ 252:	df 5f       	subi	r29, 0xFF	; 255
+ 254:	d0 33       	cpi	r29, 0x30	; 48
+ 256:	11 f0       	breq	.+4      	; 0x25c <SetAll+0x28>
 *
 * Argument	: -
 * Return	: -
 *---------------------------------------------------------------------------*/
 void SetAll(bool s)
 {
- 248:	c0 2f       	mov	r28, r16
- 24a:	f4 cf       	rjmp	.-24     	; 0x234 <SetAll+0x10>
+ 258:	c0 2f       	mov	r28, r16
+ 25a:	f4 cf       	rjmp	.-24     	; 0x244 <SetAll+0x10>
 	for( v.x = 0; v.x < X_MAX; v.x++) {
 		for( v.y = 0; v.y < Y_MAX; v.y++){
 			SetLed(v, s);
 		}
 	}
 }
- 24c:	df 91       	pop	r29
- 24e:	cf 91       	pop	r28
- 250:	1f 91       	pop	r17
- 252:	0f 91       	pop	r16
- 254:	08 95       	ret
+ 25c:	df 91       	pop	r29
+ 25e:	cf 91       	pop	r28
+ 260:	1f 91       	pop	r17
+ 262:	0f 91       	pop	r16
+ 264:	08 95       	ret
 
-00000256 <main>:
+00000266 <main>:
 #include "drv.h"
 #include "app/app.h"
 
 int main(void)
 {
 	Initialize();
- 256:	13 df       	rcall	.-474    	; 0x7e <Initialize>
+ 266:	15 df       	rcall	.-470    	; 0x92 <Initialize>
 	
     while(1)
     {
 		flash();
- 258:	fe de       	rcall	.-516    	; 0x56 <flash>
- 25a:	fe cf       	rjmp	.-4      	; 0x258 <main+0x2>
+ 268:	f6 de       	rcall	.-532    	; 0x56 <flash>
+		relay();
+ 26a:	00 df       	rcall	.-512    	; 0x6c <relay>
+ 26c:	fd cf       	rjmp	.-6      	; 0x268 <main+0x2>
 
-0000025c <_exit>:
- 25c:	f8 94       	cli
+0000026e <_exit>:
+ 26e:	f8 94       	cli
 
-0000025e <__stop_program>:
- 25e:	ff cf       	rjmp	.-2      	; 0x25e <__stop_program>
+00000270 <__stop_program>:
+ 270:	ff cf       	rjmp	.-2      	; 0x270 <__stop_program>

@@ -4,6 +4,8 @@
 
 app\flash.c
 
+app\relay.c
+
 drv.c
 
 func.c

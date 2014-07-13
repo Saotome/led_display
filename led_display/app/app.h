@@ -10,7 +10,7 @@
 #define APP_H_
 
 #include "flash.h"
-
+#include "relay.h"
 
 
 #endif /* APP_H_ */

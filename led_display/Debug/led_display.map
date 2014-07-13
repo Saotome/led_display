@@ -3,19 +3,19 @@ Archive member included because of file (symbol)
 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/avr4\libgcc.a(_exit.o)
                               c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr4/crtm88a.o (exit)
 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/avr4\libgcc.a(_clear_bss.o)
-                              app/flash.o (__do_clear_bss)
+                              drv.o (__do_clear_bss)
 
 Discarded input sections
 
  .bss           0x00000000        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr4/crtm88a.o
  .text          0x00000000        0x0 app/flash.o
  .bss           0x00000000        0x0 app/flash.o
+ .text          0x00000000        0x0 app/relay.o
+ .bss           0x00000000        0x0 app/relay.o
  .text          0x00000000        0x0 drv.o
  .bss           0x00000000        0x0 drv.o
  .text.SetLedLevel
                 0x00000000        0x2 drv.o
- .progmem.data.LED_LEVEL_MASK
-                0x00000000       0x48 drv.o
  .text          0x00000000        0x0 func.o
  .bss           0x00000000        0x0 func.o
  .text.SetAllLevel
@@ -66,6 +66,7 @@ Linker script and memory map
 Address of section .data set to 0x800100
 LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr4/crtm88a.o
 LOAD app/flash.o
+LOAD app/relay.o
 LOAD drv.o
 LOAD func.o
 LOAD led_display.o
@@ -166,7 +167,7 @@ LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0x260
+.text           0x00000000      0x272
  *(.vectors)
  .vectors       0x00000000       0x34 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr4/crtm88a.o
                 0x00000000                __vector_default
@@ -247,27 +248,29 @@ LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr
                 0x00000054                __vector_20
                 0x00000056                . = ALIGN (0x2)
  *(.text.*)
- .text.flash    0x00000056       0x28 app/flash.o
+ .text.flash    0x00000056       0x16 app/flash.o
                 0x00000056                flash
+ .text.relay    0x0000006c       0x26 app/relay.o
+                0x0000006c                relay
  .text.Initialize
-                0x0000007e       0x3a drv.o
-                0x0000007e                Initialize
+                0x00000092       0x3a drv.o
+                0x00000092                Initialize
  .text.__vector_16
-                0x000000b8       0xe0 drv.o
-                0x000000b8                __vector_16
- .text.SetLed   0x00000198       0x76 drv.o
-                0x00000198                SetLed
- .text.wait_ms  0x0000020e       0x16 func.o
-                0x0000020e                wait_ms
- .text.SetAll   0x00000224       0x32 func.o
-                0x00000224                SetAll
- .text.main     0x00000256        0x6 led_display.o
-                0x00000256                main
-                0x0000025c                . = ALIGN (0x2)
+                0x000000cc       0xdc drv.o
+                0x000000cc                __vector_16
+ .text.SetLed   0x000001a8       0x76 drv.o
+                0x000001a8                SetLed
+ .text.wait_ms  0x0000021e       0x16 func.o
+                0x0000021e                wait_ms
+ .text.SetAll   0x00000234       0x32 func.o
+                0x00000234                SetAll
+ .text.main     0x00000266        0x8 led_display.o
+                0x00000266                main
+                0x0000026e                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x0000025c        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/avr4\libgcc.a(_exit.o)
-                0x0000025c                _exit
-                0x0000025c                exit
+ .fini9         0x0000026e        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/avr4\libgcc.a(_exit.o)
+                0x0000026e                _exit
+                0x0000026e                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -286,15 +289,16 @@ LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x0000025c        0x4 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/avr4\libgcc.a(_exit.o)
+ .fini0         0x0000026e        0x4 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/avr4\libgcc.a(_exit.o)
  *(.fini0)
-                0x00000260                _etext = .
+                0x00000272                _etext = .
 
-.data           0x00800100        0x0 load address 0x00000260
+.data           0x00800100        0x0 load address 0x00000272
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
  .data          0x00800100        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr4/crtm88a.o
  .data          0x00800100        0x0 app/flash.o
+ .data          0x00800100        0x0 app/relay.o
  .data          0x00800100        0x0 drv.o
  .data          0x00800100        0x0 func.o
  .data          0x00800100        0x0 led_display.o
@@ -308,25 +312,24 @@ LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr
                 0x00800100                _edata = .
                 0x00800100                PROVIDE (__data_end, .)
 
-.bss            0x00800100       0x63
+.bss            0x00800100       0x62
                 0x00800100                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
- .bss.pos       0x00800100        0x1 app/flash.o
- .bss.led_map   0x00800101       0x60 drv.o
- .bss.pos_x     0x00800161        0x1 drv.o
- .bss.area_y    0x00800162        0x1 drv.o
+ .bss.led_map   0x00800100       0x60 drv.o
+ .bss.pos_x     0x00800160        0x1 drv.o
+ .bss.area_y    0x00800161        0x1 drv.o
  *(COMMON)
-                0x00800163                PROVIDE (__bss_end, .)
-                0x00000260                __data_load_start = LOADADDR (.data)
-                0x00000260                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x00800162                PROVIDE (__bss_end, .)
+                0x00000272                __data_load_start = LOADADDR (.data)
+                0x00000272                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x00800163        0x0
-                0x00800163                PROVIDE (__noinit_start, .)
+.noinit         0x00800162        0x0
+                0x00800162                PROVIDE (__noinit_start, .)
  *(.noinit*)
-                0x00800163                PROVIDE (__noinit_end, .)
-                0x00800163                _end = .
-                0x00800163                PROVIDE (__heap_start, .)
+                0x00800162                PROVIDE (__noinit_end, .)
+                0x00800162                _end = .
+                0x00800162                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
  *(.eeprom*)
@@ -371,6 +374,7 @@ LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr
  *(.comment)
  .comment       0x00000000       0x2f app/flash.o
                                  0x30 (size before relaxing)
+ .comment       0x00000000       0x30 app/relay.o
  .comment       0x00000000       0x30 drv.o
  .comment       0x00000000       0x30 func.o
  .comment       0x00000000       0x30 led_display.o
@@ -387,65 +391,73 @@ LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000       0xa8
+.debug_aranges  0x00000000       0xc8
  *(.debug_aranges)
  .debug_aranges
                 0x00000000       0x20 app/flash.o
  .debug_aranges
-                0x00000020       0x38 drv.o
+                0x00000020       0x20 app/relay.o
  .debug_aranges
-                0x00000058       0x30 func.o
+                0x00000040       0x38 drv.o
  .debug_aranges
-                0x00000088       0x20 led_display.o
+                0x00000078       0x30 func.o
+ .debug_aranges
+                0x000000a8       0x20 led_display.o
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000      0x708
+.debug_info     0x00000000      0x7ec
  *(.debug_info)
- .debug_info    0x00000000      0x157 app/flash.o
- .debug_info    0x00000157      0x2e7 drv.o
- .debug_info    0x0000043e      0x223 func.o
- .debug_info    0x00000661       0xa7 led_display.o
+ .debug_info    0x00000000      0x106 app/flash.o
+ .debug_info    0x00000106      0x154 app/relay.o
+ .debug_info    0x0000025a      0x2b5 drv.o
+ .debug_info    0x0000050f      0x223 func.o
+ .debug_info    0x00000732       0xba led_display.o
  *(.gnu.linkonce.wi.*)
 
-.debug_abbrev   0x00000000      0x420
+.debug_abbrev   0x00000000      0x4a8
  *(.debug_abbrev)
- .debug_abbrev  0x00000000       0xd8 app/flash.o
- .debug_abbrev  0x000000d8      0x190 drv.o
- .debug_abbrev  0x00000268      0x154 func.o
- .debug_abbrev  0x000003bc       0x64 led_display.o
+ .debug_abbrev  0x00000000       0xa0 app/flash.o
+ .debug_abbrev  0x000000a0       0xd8 app/relay.o
+ .debug_abbrev  0x00000178      0x178 drv.o
+ .debug_abbrev  0x000002f0      0x154 func.o
+ .debug_abbrev  0x00000444       0x64 led_display.o
 
-.debug_line     0x00000000      0x513
+.debug_line     0x00000000      0x61e
  *(.debug_line)
- .debug_line    0x00000000       0xf7 app/flash.o
- .debug_line    0x000000f7      0x1f4 drv.o
- .debug_line    0x000002eb      0x1c6 func.o
- .debug_line    0x000004b1       0x62 led_display.o
+ .debug_line    0x00000000       0xeb app/flash.o
+ .debug_line    0x000000eb      0x107 app/relay.o
+ .debug_line    0x000001f2      0x1f4 drv.o
+ .debug_line    0x000003e6      0x1c6 func.o
+ .debug_line    0x000005ac       0x72 led_display.o
 
-.debug_frame    0x00000000      0x140
+.debug_frame    0x00000000      0x168
  *(.debug_frame)
- .debug_frame   0x00000000       0x2c app/flash.o
- .debug_frame   0x0000002c       0x84 drv.o
- .debug_frame   0x000000b0       0x6c func.o
- .debug_frame   0x0000011c       0x24 led_display.o
+ .debug_frame   0x00000000       0x24 app/flash.o
+ .debug_frame   0x00000024       0x30 app/relay.o
+ .debug_frame   0x00000054       0x84 drv.o
+ .debug_frame   0x000000d8       0x6c func.o
+ .debug_frame   0x00000144       0x24 led_display.o
 
-.debug_str      0x00000000      0x1d8
+.debug_str      0x00000000      0x1d5
  *(.debug_str)
- .debug_str     0x00000000       0xce app/flash.o
+ .debug_str     0x00000000       0xb8 app/flash.o
+                                 0xec (size before relaxing)
+ .debug_str     0x000000b8       0x2b app/relay.o
                                 0x102 (size before relaxing)
- .debug_str     0x000000ce       0xc5 drv.o
-                                0x1a3 (size before relaxing)
- .debug_str     0x00000193       0x2d func.o
+ .debug_str     0x000000e3       0xad drv.o
+                                0x18b (size before relaxing)
+ .debug_str     0x00000190       0x2d func.o
                                 0x16a (size before relaxing)
- .debug_str     0x000001c0       0x18 led_display.o
-                                 0xe2 (size before relaxing)
+ .debug_str     0x000001bd       0x18 led_display.o
+                                 0xe8 (size before relaxing)
 
-.debug_loc      0x00000000      0x411
+.debug_loc      0x00000000      0x41e
  *(.debug_loc)
- .debug_loc     0x00000000       0x22 app/flash.o
- .debug_loc     0x00000022      0x1ac drv.o
- .debug_loc     0x000001ce      0x243 func.o
+ .debug_loc     0x00000000       0x4e app/relay.o
+ .debug_loc     0x0000004e      0x18d drv.o
+ .debug_loc     0x000001db      0x243 func.o
 
 .debug_macinfo
  *(.debug_macinfo)
@@ -453,12 +465,13 @@ LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr
 .debug_pubtypes
  *(.debug_pubtypes)
 
-.debug_ranges   0x00000000       0x68
+.debug_ranges   0x00000000       0x78
  *(.debug_ranges)
  .debug_ranges  0x00000000       0x10 app/flash.o
- .debug_ranges  0x00000010       0x28 drv.o
- .debug_ranges  0x00000038       0x20 func.o
- .debug_ranges  0x00000058       0x10 led_display.o
+ .debug_ranges  0x00000010       0x10 app/relay.o
+ .debug_ranges  0x00000020       0x28 drv.o
+ .debug_ranges  0x00000048       0x20 func.o
+ .debug_ranges  0x00000068       0x10 led_display.o
 
 .debug_macro
  *(.debug_macro)

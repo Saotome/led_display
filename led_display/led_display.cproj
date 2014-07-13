@@ -132,6 +132,12 @@
     <Compile Include="app\flash.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="app\relay.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="app\relay.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="drv.c">
       <SubType>compile</SubType>
     </Compile>

@@ -38,6 +38,7 @@ SUBDIRS :=  \
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
 ../app/flash.c \
+../app/relay.c \
 ../drv.c \
 ../func.c \
 ../led_display.c
@@ -51,24 +52,28 @@ ASM_SRCS +=
 
 OBJS +=  \
 app/flash.o \
+app/relay.o \
 drv.o \
 func.o \
 led_display.o
 
 OBJS_AS_ARGS +=  \
 app/flash.o \
+app/relay.o \
 drv.o \
 func.o \
 led_display.o
 
 C_DEPS +=  \
 app/flash.d \
+app/relay.d \
 drv.d \
 func.d \
 led_display.d
 
 C_DEPS_AS_ARGS +=  \
 app/flash.d \
+app/relay.d \
 drv.d \
 func.d \
 led_display.d
@@ -84,6 +89,8 @@ OUTPUT_FILE_DEP:= ./makedep.mk
 LIB_DEP+= 
 
 # AVR32/GNU C Compiler
+
+
 
 
 

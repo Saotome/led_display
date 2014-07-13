@@ -22,7 +22,7 @@
  *****************************************************************************/
 #define Y_AXIS			PORTD
 #define Y_AREA			PORTB
-#define CHANGE_DELAY    (32)
+#define CHANGE_DELAY    (36)
 
 /*****************************************************************************
  * Type Definition                                                           *
@@ -41,7 +41,7 @@ static uint16_t duty;
 static uint8_t led_map[X_MAX][Y_AREA_NUM];
 //static union LEVEL led_level[X_MAX][Y_AREA_NUM];
 
-const uint64_t LED_LEVEL_MASK[BYTE + 1] PROGMEM = {
+/*const uint64_t LED_LEVEL_MASK[BYTE + 1] PROGMEM = {
 	0x0000000000000000,
 	0x0100000000000000,
 	0x0101000000000000,
@@ -51,7 +51,7 @@ const uint64_t LED_LEVEL_MASK[BYTE + 1] PROGMEM = {
 	0x0101010101010000,
 	0x0101010101010100,
 	0x0101010101010101
-};
+};*/
 
 /*****************************************************************************
  * Function prototype                                                        *

@@ -19,6 +19,7 @@ int main(void)
     while(1)
     {
 		flash();
+		relay();
         //TODO:: Please write your application code 
     }
 }
